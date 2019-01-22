@@ -1,5 +1,4 @@
-
-# gitlab-ldap-sync
+# nextcloud_ics_sync
 
 Python project to sync ics calendars into nextcloud.
 
@@ -47,17 +46,22 @@ cd ./nextcloud_ics_sync && ./nextcloud_ics_sync.py
 
 You should get something like this :
 ```bash
-Imported: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx (204)
-Imported: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx (204)
-Imported: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx (204)
-Imported: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx (204)
-Imported: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx@gmail.com (204)
-Imported: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx@gmail.com (204)
-Imported: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx@gmail.com (204)
-Imported: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx@gmail.com (204)
+[XXXX-XX-XX XX:XX:XX,XXX] [INFO] Initializing script...
+[XXXX-XX-XX XX:XX:XX,XXX] [INFO] Done.
+[XXXX-XX-XX XX:XX:XX,XXX] [INFO] Importing calendars...
+[XXXX-XX-XX XX:XX:XX,XXX] [INFO]  Working on section import_a
+[XXXX-XX-XX XX:XX:XX,XXX] [INFO]   Working with calendar nextcloud_a...
+[XXXX-XX-XX XX:XX:XX,XXX] [INFO]    Imported: uuid (Event Name)
+[XXXX-XX-XX XX:XX:XX,XXX] [INFO]    Imported: uuid (Event Name)
+[XXXX-XX-XX XX:XX:XX,XXX] [INFO]    Imported: uuid (Event Name)
+[XXXX-XX-XX XX:XX:XX,XXX] [INFO]    Imported: uuid (Event Name)
+[XXXX-XX-XX XX:XX:XX,XXX] [INFO]   Done.
+[XXXX-XX-XX XX:XX:XX,XXX] [INFO]  Done.
+[XXXX-XX-XX XX:XX:XX,XXX] [INFO] Done.
 ```
 
 You could add the script in a cron to run it periodically.
+
 ## Deployment
 
 How to configure config.json
@@ -87,11 +91,11 @@ ics_password :
 ```
 For now ```ics_username``` and ```ics_password``` are mandatory in each import, meaning the keys should be here but empty if not needed by the distant ics server.
 
-```create_user``` If set to true, the script will create the users in gitlab and add them in the corresponding groups. Be aware that gitlab will send a mail to every new users created.
 ## TODO
 
 - [ ]  validate if ```ics_username``` and ```ics_password``` are in config to avoid putting empty value in config
 - [ ]  your suggestions
+
 ## Built With
 
 * [Python](https://www.python.org/)
