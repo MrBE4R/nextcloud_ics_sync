@@ -1,0 +1,10 @@
+[DEFAULT]
+username: username
+password: password
+server: https://nextcloud.example.com/
+
+[import_a]
+calendar: calendar_xy
+ics_url: https://nextcloud.example.org/index.php/apps/calendar/export.php?calid=6
+ics_username :
+ics_password :
