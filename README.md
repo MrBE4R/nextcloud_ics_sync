@@ -16,7 +16,7 @@ This project has been tested on CentOS 7.6 with nextcloud 14.x, google calendar 
 ```
 Python        : 3.4.9
 pip3          : 8.1.2
-requests      : 2.9.1
+requests      : 2.20.0
 icalendar     : 3.9.2
 ```
 
