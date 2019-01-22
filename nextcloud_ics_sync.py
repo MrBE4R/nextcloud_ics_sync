@@ -26,43 +26,44 @@ def do_import(username, password, calendar, server, ics_url, ics_username, ics_p
         logging.error(e)
         return
 
-    existing_uids = [e['UID'].to_ical() for e in target_cal.walk('VEVENT')]
+    existing_uids = [bytes.decode(e['UID'].to_ical()).replace('\'', '').replace('/', 'slash') for e in target_cal.walk('VEVENT')]
 
     sourceRequest = requests.get(ics_url, auth=(ics_username, ics_password))
     sourceRequest.encoding = 'utf-8'
     sourceContent = sourceRequest.text
     c = Calendar.from_ical(sourceContent)
 
+    distant_uids = [bytes.decode(e['UID'].to_ical()).replace('\'', '').replace('/', 'slash') for e in c.walk('VEVENT')]
+
     imported_uids = []
     for e in c.walk('VEVENT'):
-        uid = bytes.decode(e['UID'].to_ical())
-        uid.replace('\'', '')
-        uid.replace('/', 'slash')
+        uid = bytes.decode(e['UID'].to_ical()).replace('\'', '').replace('/', 'slash')
         name = bytes.decode(e['SUMMARY'].to_ical())
-        cal = Calendar()
-        cal.add_component(e)
-        r = requests.put('%s/%s.ics' % (base_url, uid),
-                         data=cal.to_ical(),
-                         auth=(username, password),
-                         headers={'content-type': 'text/calendar; charset=UTF-8'}
-                         )
-        if r.status_code == 500 and r'Sabre\VObject\Recur\NoInstancesException' in r.text:
-            logging.warning('   No valid instances: %s (%s)' % (uid, name))
-        elif r.status_code == 201 or r.status_code == 204:
-            logging.info('   Imported: %s (%s)' % (uid, name))
-            imported_uids.append(uid)
-        else:
-            r.raise_for_status()
-
-        for uid in existing_uids:
-            if not uid in imported_uids:
-                r = requests.delete('%s/%s.ics' % (base_url, uid), auth=(username, password))
-            if r.status_code == 204:
-                logging.info('Deleted %s (%s)' % (uid, name))
-            elif r.status_code == 404:
-                pass
+        if uid not in existing_uids:
+            cal = Calendar()
+            cal.add_component(e)
+            r = requests.put('%s/%s.ics' % (base_url, uid),
+                             data=cal.to_ical(),
+                             auth=(username, password),
+                             headers={'content-type': 'text/calendar; charset=UTF-8'}
+                             )
+            if r.status_code == 500 and r'Sabre\VObject\Recur\NoInstancesException' in r.text:
+                logging.warning('   No valid instances: %s (%s)' % (uid, name))
+            elif r.status_code == 201 or r.status_code == 204:
+                logging.info('   Imported: %s (%s)' % (uid, name))
+                imported_uids.append(uid)
             else:
                 r.raise_for_status()
+
+    for euid in existing_uids:
+        if not euid in distant_uids:
+            r = requests.delete('%s/%s.ics' % (base_url, euid), auth=(username, password))
+        if r.status_code == 204:
+            logging.info('Deleted %s' % euid)
+        elif r.status_code == 404:
+            pass
+        else:
+            r.raise_for_status()
     logging.info('  Done.')
 
 
