@@ -17,7 +17,7 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 CALDAVURL = '%sremote.php/dav/calendars/%s/%s'
 
 def events_are_different(event1, event2):
-    """Vergleicht zwei VEVENTs auf relevante Unterschiede."""
+  # ---  Compares two VEVENTs for relevant differences.
     fields = ['DTSTART', 'DTEND', 'SUMMARY', 'LOCATION', 'DESCRIPTION']
     for f in fields:
         v1 = event1.get(f)
@@ -63,7 +63,7 @@ def do_import(username, password, calendar, server, ics_url, ics_username, ics_p
         cal.add_component(e)
         url = '%s/%s.ics' % (base_url, uid)
 
-        # --- NEU: Wenn Event existiert und sich geändert hat, aktualisieren ---
+    # --- NEW: If event exists and has changed, update ---
         if uid in existing_uids:
             existing = target_events[uid]
             if events_are_different(e, existing):
@@ -87,7 +87,7 @@ def do_import(username, password, calendar, server, ics_url, ics_username, ics_p
             else:
                 r.raise_for_status()
 
-    # --- Entfernte Events löschen ---
+    # --- Delete removed events ---
 
     for euid in existing_uids - distant_uids:
         r = requests.delete('%s/%s.ics' % (base_url, euid), auth=(username, password))
